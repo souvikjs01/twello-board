@@ -17,11 +17,13 @@
     "@twello/db": "workspace:*",
     "@types/express": "^5.0.6",
     "better-auth": "^1.6.26",
+    "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1"
   },
   "devDependencies": {
     "@twello/typescript-config": "workspace:*",
+    "@types/cors": "^2.8.19",
     "@types/node": "^22.15.3",
     "tsx": "^4.23.11",
     "typescript": "^7.0.2"
