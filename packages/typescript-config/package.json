@@ -1,7 +1,10 @@
 {
-  "name": "@repo/typescript-config",
+  "name": "@twello/typescript-config",
   "version": "0.0.0",
   "private": true,
+  "exports": {
+    "./base.json": "./base.json"
+  },
   "license": "MIT",
   "publishConfig": {
     "access": "public"

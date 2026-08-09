@@ -1,6 +1,10 @@
 {
-  "name": "db",
+  "name": "@twello/db",
   "version": "1.0.0",
+  "private": true,
+  "exports": {
+    "./client": "./index.ts"
+  },
   "description": "",
   "main": "index.js",
   "scripts": {
