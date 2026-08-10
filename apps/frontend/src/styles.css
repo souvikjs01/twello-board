@@ -1,5 +1,9 @@
-
 @import "tailwindcss";
+
+:root {
+  --primary: #000000;
+  --primary-foreground: #ffffff;
+}
 
 * {
   box-sizing: border-box;
@@ -14,4 +18,3 @@ body,
 body {
   margin: 0;
 }
-
