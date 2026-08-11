@@ -8,16 +8,18 @@ datasource db {
 }
 
 model User {
-  id            String       @id
+  id            String    @id
   name          String
   email         String
-  emailVerified Boolean      @default(false)
+  emailVerified Boolean   @default(false)
   image         String?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
-  memberships   Membership[]
+
+  memberships      Membership[]
+  issueAssignments IssueAssignment[]
 
   @@unique([email])
   @@map("user")
@@ -83,7 +85,7 @@ model Organization {
   memberships Membership[]
 
   // Boards belonging to the organization
-  // boards Board[]
+  boards Board[]
 }
 
 enum MembershipRole {
@@ -107,4 +109,98 @@ model Membership {
   @@unique([userId, orgId])
   @@index([userId])
   @@index([orgId])
+}
+
+model Board {
+  id          String  @id @default(cuid())
+  title       String
+  description String?
+
+  organizationId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  sections Section[]
+
+  @@index([organizationId])
+}
+
+model Section {
+  id    String @id @default(cuid())
+  title String
+
+  boardId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  board Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
+
+  issues Issue[]
+
+  @@index([boardId])
+}
+
+model Issue {
+  id          String  @id @default(cuid())
+  title       String
+  description String?
+
+  priority IssuePriority @default(MEDIUM)
+
+  position Float
+
+  sectionId        String
+  issueAssignments IssueAssignment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  comments Comment[]
+
+  @@index([sectionId])
+}
+
+model IssueAssignment {
+  id String @id @default(cuid())
+
+  issueId String
+  userId  String
+
+  issue Issue @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([issueId, userId])
+  @@index([issueId])
+  @@index([userId])
+}
+
+model Comment {
+  id      String @id @default(cuid())
+  content String
+
+  issueId String
+  userId  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  issue Issue @relation(fields: [issueId], references: [id], onDelete: Cascade)
+
+  @@index([issueId])
+  @@index([userId])
+}
+
+enum IssuePriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
 }

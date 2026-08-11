@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "exports": {
-    "./client": "./index.ts"
+    "./client": "./index.ts",
+    "./generated": "./generated.ts"
   },
   "description": "",
   "main": "index.js",

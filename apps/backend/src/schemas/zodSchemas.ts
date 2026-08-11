@@ -13,3 +13,13 @@ export const createOrganizationSchema = z.object({
         .max(500, "Description cannot exceed 500 characters")
         .optional(),
 });
+
+export const createBoardSchema = z.object({
+    title: z.string().min(2, "Board title is required").max(100),
+    description: z
+        .string()
+        .max(500, "Description must be less than 500 characters")
+        .optional()
+});
+
+export type CreateBoardSchemaType = z.infer<typeof createBoardSchema>;
