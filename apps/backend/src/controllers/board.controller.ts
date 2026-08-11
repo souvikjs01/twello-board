@@ -5,7 +5,7 @@ import type {
 } from "express";
 
 import { createBoardSchema } from "../schemas/zodSchemas.js";
-import { createBoard } from "../services/board.service.js";
+import { createBoard, getAllOrgBoards } from "../services/board.service.js";
 
 export async function createBoardController(
     req: Request,
@@ -54,6 +54,44 @@ export async function createBoardController(
             success: true,
             message: "Board created successfully",
             data: board,
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export async function getAllOrgBoardsController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) {
+    try {
+        if (!req.user) {
+            res.status(401).json({
+                success: false,
+                message: "Unauthorized",
+            });
+
+            return;
+        }
+
+        const { orgId } = req.params;
+
+        if (!orgId || Array.isArray(orgId)) {
+            res.status(400).json({
+                success: false,
+                message: "Organization ID is required",
+            });
+            return;
+        }
+
+
+        const boards = await getAllOrgBoards(orgId, req.user.id);
+
+        res.status(201).json({
+            success: true,
+            message: "Boards fetched successfully",
+            data: boards,
         });
     } catch (error) {
         next(error);

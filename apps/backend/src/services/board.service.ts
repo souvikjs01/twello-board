@@ -29,3 +29,19 @@ export async function createBoard(
         organizationId: orgId,
     });
 }
+
+export async function getAllOrgBoards(orgId: string, userId: string) {
+    const membership =
+        await membershipRepository.findMembership(
+            userId,
+            orgId,
+        );
+
+    if (!membership) {
+        throw new Error(
+            "You are not a member of this organization",
+        );
+    }
+
+    return boardRepository.findBoardsByOrganization(orgId);
+}
