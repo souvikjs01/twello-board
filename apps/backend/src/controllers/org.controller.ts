@@ -1,6 +1,13 @@
 import type { NextFunction, Request, Response } from "express";
-import { addOrganizationMember, createOrganization, getOrganizationMembers } from "../services/org.service.js";
-import { addOrganizationMemberSchema, createOrganizationSchema } from "../schemas/zodSchemas.js";
+import {
+    addOrganizationMember,
+    createOrganization,
+    getOrganizationMembers
+} from "../services/org.service.js";
+import {
+    addOrganizationMemberSchema,
+    createOrganizationSchema
+} from "../schemas/zodSchemas.js";
 
 export async function createOrganizationController(
     req: Request,
@@ -87,7 +94,7 @@ export async function addOrganizationMemberController(
         const membership = await addOrganizationMember(
             req.user.id,
             orgId,
-            result.data.userId,
+            result.data.email,
         );
 
         res.status(201).json({

@@ -3,6 +3,7 @@ import { addMemberToOrg, findMembersByOrganization, findMembership } from "../re
 import * as organizationRepository from "../repositories/org.repository.js";
 import { AddOrganizationMemberSchemaType } from "../schemas/zodSchemas.js";
 import { AppError } from "../lib/error.js";
+import { findUserByEmail } from "../repositories/user.repository.js";
 
 interface CreateOrganizationInput {
     name: string;
@@ -19,8 +20,18 @@ export async function createOrganization(
 export async function addOrganizationMember(
     requesterId: string,
     organizationId: string,
-    userId: string,
+    email: string,
 ): Promise<Membership | null> {
+    // check if user exist or not 
+    const user = await findUserByEmail(email);
+    if (!user) {
+        throw new AppError(
+            "User not found",
+            404,
+            "NOT_FOUND",
+        );
+    }
+
     // Check requester membership
     const requesterMembership =
         await findMembership(
@@ -48,7 +59,7 @@ export async function addOrganizationMember(
     // Check if user is already a member
     const existingMembership =
         await findMembership(
-            userId,
+            user.id,
             organizationId,
         );
 
@@ -60,7 +71,7 @@ export async function addOrganizationMember(
         );
     }
 
-    return addMemberToOrg(userId, organizationId);
+    return addMemberToOrg(user.id, organizationId);
 }
 
 // find all the members of an org
