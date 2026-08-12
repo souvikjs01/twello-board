@@ -28,4 +28,15 @@ export const addOrganizationMemberSchema = z.object({
     email: z.string("Invalid email ID"),
 });
 
-export type AddOrganizationMemberSchemaType = z.infer<typeof addOrganizationMemberSchema>;  
+export type AddOrganizationMemberSchemaType = z.infer<typeof addOrganizationMemberSchema>;
+
+export const createSectionSchema = z.object({
+    title: z
+        .string()
+        .trim()
+        .min(1, "Section title is required")
+        .max(100, "Section title is too long"),
+    boardId: z.string()
+});
+
+export type CreateSectionSchemaType = z.infer<typeof createSectionSchema>;

@@ -5,7 +5,11 @@ import {
     getOrganizationMembersController,
 } from "../controllers/org.controller";
 import { requireAuth } from "../middlewares/auth.js";
-import { createBoardController, getAllOrgBoardsController } from "../controllers/board.controller";
+import {
+    createBoardController,
+    getAllOrgBoardsController,
+} from "../controllers/board.controller";
+import { createSectionController } from "../controllers/section.controller";
 
 const router: Router = Router();
 
@@ -14,6 +18,7 @@ router.post("/:orgId/board/add", requireAuth, createBoardController);
 router.get("/:orgId/boards", requireAuth, getAllOrgBoardsController);
 router.post("/:orgId/add-member", requireAuth, addOrganizationMemberController);
 router.get("/:orgId/members", requireAuth, getOrganizationMembersController);
+router.post("/section/add", requireAuth, createSectionController);
 
 
 export default router;
