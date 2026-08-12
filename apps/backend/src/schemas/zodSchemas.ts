@@ -23,3 +23,9 @@ export const createBoardSchema = z.object({
 });
 
 export type CreateBoardSchemaType = z.infer<typeof createBoardSchema>;
+
+export const addOrganizationMemberSchema = z.object({
+    userId: z.string("Invalid user ID"),
+});
+
+export type AddOrganizationMemberSchemaType = z.infer<typeof addOrganizationMemberSchema>;  

@@ -1,3 +1,4 @@
+import { AppError } from "../lib/error.js";
 import * as boardRepository from "../repositories/board.repository.js";
 import * as membershipRepository from "../repositories/members.repository.js";
 
@@ -18,8 +19,10 @@ export async function createBoard(
         );
 
     if (!membership) {
-        throw new Error(
+        throw new AppError(
             "You are not a member of this organization",
+            404,
+            "NOT_FOUND",
         );
     }
 
@@ -38,8 +41,10 @@ export async function getAllOrgBoards(orgId: string, userId: string) {
         );
 
     if (!membership) {
-        throw new Error(
+        throw new AppError(
             "You are not a member of this organization",
+            404,
+            "NOT_FOUND",
         );
     }
 

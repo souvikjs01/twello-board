@@ -11,3 +11,14 @@ export async function findMembership(userId: string, organizationId: string): Pr
         },
     });
 }
+
+
+export async function addMemberToOrg(userId: string, organizationId: string): Promise<Membership | null> {
+    return prisma.membership.create({
+        data: {
+            userId,
+            orgId: organizationId,
+            role: "MEMBER",
+        },
+    });
+}

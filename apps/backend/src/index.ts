@@ -4,6 +4,7 @@ import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth";
 import cors from "cors";
 import apiRouter from "./routes/routes.js";
+import { errorHandler } from "./middlewares/error-handlr";
 dotenv.config();
 
 const PORT = process.env.PORT || 8001;
@@ -23,6 +24,8 @@ app.use("/api/v1", apiRouter);
 app.get("/", (req, res) => {
     res.send("Hello from http backend");
 });
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`)
