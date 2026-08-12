@@ -40,3 +40,23 @@ export const createSectionSchema = z.object({
 });
 
 export type CreateSectionSchemaType = z.infer<typeof createSectionSchema>;
+
+// create issue:
+export const createIssueSchema = z.object({
+    title: z
+        .string()
+        .trim()
+        .min(2, "Issue title must be atleast 2 characters")
+        .max(500),
+
+    description: z
+        .string()
+        .trim()
+        .max(5000)
+        .optional(),
+
+    priority: z
+        .enum(["LOW", "MEDIUM", "HIGH", "URGENT"])
+        .default("MEDIUM"),
+    sectionId: z.string()
+});
