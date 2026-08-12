@@ -1,5 +1,5 @@
 import { Membership } from "@twello/db/generated";
-import { addMemberToOrg, findMembership } from "../repositories/members.repository.js";
+import { addMemberToOrg, findMembersByOrganization, findMembership } from "../repositories/members.repository.js";
 import * as organizationRepository from "../repositories/org.repository.js";
 import { AddOrganizationMemberSchemaType } from "../schemas/zodSchemas.js";
 import { AppError } from "../lib/error.js";
@@ -15,7 +15,6 @@ export async function createOrganization(
 ) {
     return organizationRepository.createOrganization(input);
 }
-
 
 export async function addOrganizationMember(
     requesterId: string,
@@ -62,4 +61,22 @@ export async function addOrganizationMember(
     }
 
     return addMemberToOrg(userId, organizationId);
+}
+
+// find all the members of an org
+export async function getOrganizationMembers(
+    userId: string,
+    organizationId: string,
+) {
+    const requesterMembership = await findMembership(userId, organizationId);
+
+    if (!requesterMembership) {
+        throw new AppError(
+            "You are not a member of this organization",
+            403,
+            "NOT_ORGANIZATION_MEMBER",
+        );
+    }
+
+    return findMembersByOrganization(organizationId);
 }
