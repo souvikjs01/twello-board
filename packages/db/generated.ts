@@ -5,4 +5,5 @@ export type {
     Section,
     Issue,
     User,
+    IssuePriority
 } from "./generated/prisma/client.js";

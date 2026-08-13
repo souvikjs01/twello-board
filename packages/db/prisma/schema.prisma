@@ -151,8 +151,6 @@ model Issue {
 
   priority IssuePriority @default(MEDIUM)
 
-  position Float
-
   sectionId        String
   issueAssignments IssueAssignment[]
 
