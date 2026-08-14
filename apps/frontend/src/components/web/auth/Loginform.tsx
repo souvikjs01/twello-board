@@ -15,28 +15,27 @@ import {
     FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { Link, useRouter } from "@tanstack/react-router"
+import { Link, useNavigate } from "@tanstack/react-router"
 import { useForm } from "react-hook-form";
 import { loginSchema, type LoginFormType } from "#/lib/schemas"
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { authClient } from "#/lib/auth-client";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useTransition } from "react"
 
 
 export function LoginForm({
     className,
     ...props
 }: React.ComponentProps<"div">) {
-    const router = useRouter();
-    const [serverError, setServerError] = useState<string | null>(null);
+    const navigate = useNavigate();
+    const [isPending, startTransition] = useTransition();
 
     const {
         register,
         handleSubmit,
-        setError,
-        formState: { errors, isSubmitting },
+        formState: { errors },
     } = useForm<LoginFormType>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
@@ -45,44 +44,24 @@ export function LoginForm({
         },
     });
 
-    const onSubmit = async (values: LoginFormType) => {
-        setServerError(null);
-
-        const { error } = await authClient.signIn.email({
-            email: values.email,
-            password: values.password,
-        });
-
-        if (error) {
-            // Map known Better Auth error codes to form fields
-            switch (error.code) {
-                case "INVALID_EMAIL_OR_PASSWORD":
-                    setError("email", { message: "Invalid email or password" });
-                    setError("password", { message: "Invalid email or password" });
-                    break;
-                case "USER_NOT_FOUND":
-                    setError("email", { message: "No account found with this email" });
-                    break;
-                case "INVALID_PASSWORD":
-                    setError("password", { message: "Incorrect password" });
-                    break;
-                case "TOO_MANY_REQUESTS":
-                    setServerError("Too many attempts. Please try again later.");
-                    break;
-                default:
-                    setServerError(error.message ?? "Something went wrong. Please try again.");
-                    toast.error("Login failed", {
-                        description: error.message ?? "An unexpected error occurred.",
-                    });
-            }
-            return;
-        }
-
-        toast.success("Welcome back!", {
-            description: "You have been signed in successfully.",
-        });
-
-        router.navigate({ to: "/dashboard" });
+    const onSubmit = (values: LoginFormType) => {
+        startTransition(async () => {
+            await authClient.signIn.email({
+                email: values.email,
+                password: values.password,
+                fetchOptions: {
+                    onSuccess: () => {
+                        toast.success("Account Logged in successfully")
+                        navigate({
+                            to: "/dashboard/organization"
+                        })
+                    },
+                    onError: ({ error }) => {
+                        toast.error(error.message ?? "Something went wrong")
+                    }
+                }
+            });
+        })
     };
 
     return (
@@ -100,13 +79,6 @@ export function LoginForm({
 
                     >
                         <FieldGroup className="gap-5">
-                            {/* Server-level error banner */}
-                            {serverError && (
-                                <div className="rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive">
-                                    {serverError}
-                                </div>
-                            )}
-
                             {/* Email */}
                             <Field>
                                 <FieldLabel htmlFor="email"> Email </FieldLabel>
@@ -144,9 +116,9 @@ export function LoginForm({
                                 <Button
                                     type="submit"
                                     className="w-full bg-[#111111] text-white"
-                                    disabled={isSubmitting}
+                                    disabled={isPending}
                                 >
-                                    {isSubmitting ? (
+                                    {isPending ? (
                                         <>
                                             <Loader2 className="h-5 w-5 animate-spin" size={26} /> Logging in
                                         </>

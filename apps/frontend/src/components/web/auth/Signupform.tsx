@@ -15,27 +15,27 @@ import {
     FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { Link, useRouter } from "@tanstack/react-router"
+import { Link } from "@tanstack/react-router"
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authClient } from "#/lib/auth-client";
 import { toast } from "sonner";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { signupSchema, type SignupFormType } from "#/lib/schemas";
 import { Loader2 } from "lucide-react"
+import { useNavigate } from "@tanstack/react-router"
+import { useTransition } from "react"
 
 export function SignupForm({
     className,
     ...props
 }: React.ComponentProps<"div">) {
-    const router = useRouter();
-    const [serverError, setServerError] = useState<string | null>(null);
+    const navigate = useNavigate();
+    const [isPending, startTransition] = useTransition();
 
     const {
         register,
         handleSubmit,
-        setError,
-        formState: { errors, isSubmitting },
+        formState: { errors },
     } = useForm<SignupFormType>({
         resolver: zodResolver(signupSchema),
         defaultValues: {
@@ -45,45 +45,25 @@ export function SignupForm({
         },
     });
 
-    const onSubmit = async (values: SignupFormType) => {
-        setServerError(null);
-
-        const { error } = await authClient.signUp.email({
-            name: values.name,
-            email: values.email,
-            password: values.password,
-        });
-
-        if (error) {
-            // Map known Better Auth error codes to form fields
-            switch (error.code) {
-                case "INVALID_EMAIL_OR_PASSWORD":
-                    setError("email", { message: "Invalid email or password" });
-                    setError("password", { message: "Invalid email or password" });
-                    break;
-                case "USER_NOT_FOUND":
-                    setError("email", { message: "No account found with this email" });
-                    break;
-                case "INVALID_PASSWORD":
-                    setError("password", { message: "Incorrect password" });
-                    break;
-                case "TOO_MANY_REQUESTS":
-                    setServerError("Too many attempts. Please try again later.");
-                    break;
-                default:
-                    setServerError(error.message ?? "Something went wrong. Please try again.");
-                    toast.error("Signup failed", {
-                        description: error.message ?? "An unexpected error occurred.",
-                    });
-            }
-            return;
-        }
-
-        toast.success("Welcome to Plannr!", {
-            description: "You have been signed in successfully.",
-        });
-
-        router.navigate({ to: "/dashboard" });
+    const onSubmit = (values: SignupFormType) => {
+        startTransition(async () => {
+            await authClient.signUp.email({
+                name: values.name,
+                email: values.email,
+                password: values.password,
+                fetchOptions: {
+                    onSuccess: () => {
+                        toast.success("Account signed up successfully")
+                        navigate({
+                            to: "/dashboard/organization"
+                        })
+                    },
+                    onError: ({ error }) => {
+                        toast.error(error.message ?? "Something went wrong")
+                    }
+                }
+            });
+        })
     };
     return (
         <div className={cn("w-full max-w-sm", className)} {...props} >
@@ -100,11 +80,6 @@ export function SignupForm({
                         onSubmit={handleSubmit(onSubmit)}
                         noValidate
                     >
-                        {serverError && (
-                            <div className="rounded-md bg-destructive/10 px-4 py-3 text-sm text-red-400">
-                                {serverError}
-                            </div>
-                        )}
                         <FieldGroup className="gap-5">
                             {/* Name */}
                             <Field>
@@ -164,9 +139,9 @@ export function SignupForm({
                                 <Button
                                     type="submit"
                                     className="w-full bg-[#111111] text-white"
-                                    disabled={isSubmitting}
+                                    disabled={isPending}
                                 >
-                                    {isSubmitting ? (
+                                    {isPending ? (
                                         <>
                                             <Loader2 className="h-5 w-5 animate-spin" size={26} /> Signing up
                                         </>
