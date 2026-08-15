@@ -87,6 +87,7 @@ export async function getAllOrgBoardsController(
 
 
         const boards = await getAllOrgBoards(orgId, req.user.id);
+        console.log(boards);
 
         res.status(201).json({
             success: true,

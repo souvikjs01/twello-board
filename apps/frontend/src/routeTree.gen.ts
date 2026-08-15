@@ -15,6 +15,8 @@ import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthSignupRouteImport } from './routes/auth/signup'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as DashboardOrganizationIndexRouteImport } from './routes/dashboard/organization/index'
+import { Route as DashboardOrganizationOrgIdRouteRouteImport } from './routes/dashboard/organization/$orgId/route'
+import { Route as DashboardOrganizationBoardBoardIdRouteRouteImport } from './routes/dashboard/organization/board/$boardId/route'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -47,6 +49,18 @@ const DashboardOrganizationIndexRoute =
     path: '/organization/',
     getParentRoute: () => DashboardRouteRoute,
   } as any)
+const DashboardOrganizationOrgIdRouteRoute =
+  DashboardOrganizationOrgIdRouteRouteImport.update({
+    id: '/organization/$orgId',
+    path: '/organization/$orgId',
+    getParentRoute: () => DashboardRouteRoute,
+  } as any)
+const DashboardOrganizationBoardBoardIdRouteRoute =
+  DashboardOrganizationBoardBoardIdRouteRouteImport.update({
+    id: '/organization/board/$boardId',
+    path: '/organization/board/$boardId',
+    getParentRoute: () => DashboardRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,14 +68,18 @@ export interface FileRoutesByFullPath {
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/organization/$orgId': typeof DashboardOrganizationOrgIdRouteRoute
   '/dashboard/organization/': typeof DashboardOrganizationIndexRoute
+  '/dashboard/organization/board/$boardId': typeof DashboardOrganizationBoardBoardIdRouteRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/organization/$orgId': typeof DashboardOrganizationOrgIdRouteRoute
   '/dashboard/organization': typeof DashboardOrganizationIndexRoute
+  '/dashboard/organization/board/$boardId': typeof DashboardOrganizationBoardBoardIdRouteRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -70,7 +88,9 @@ export interface FileRoutesById {
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/organization/$orgId': typeof DashboardOrganizationOrgIdRouteRoute
   '/dashboard/organization/': typeof DashboardOrganizationIndexRoute
+  '/dashboard/organization/board/$boardId': typeof DashboardOrganizationBoardBoardIdRouteRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -80,14 +100,18 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/signup'
     | '/dashboard/'
+    | '/dashboard/organization/$orgId'
     | '/dashboard/organization/'
+    | '/dashboard/organization/board/$boardId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth/login'
     | '/auth/signup'
     | '/dashboard'
+    | '/dashboard/organization/$orgId'
     | '/dashboard/organization'
+    | '/dashboard/organization/board/$boardId'
   id:
     | '__root__'
     | '/'
@@ -95,7 +119,9 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/signup'
     | '/dashboard/'
+    | '/dashboard/organization/$orgId'
     | '/dashboard/organization/'
+    | '/dashboard/organization/board/$boardId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -149,17 +175,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardOrganizationIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
+    '/dashboard/organization/$orgId': {
+      id: '/dashboard/organization/$orgId'
+      path: '/organization/$orgId'
+      fullPath: '/dashboard/organization/$orgId'
+      preLoaderRoute: typeof DashboardOrganizationOrgIdRouteRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/organization/board/$boardId': {
+      id: '/dashboard/organization/board/$boardId'
+      path: '/organization/board/$boardId'
+      fullPath: '/dashboard/organization/board/$boardId'
+      preLoaderRoute: typeof DashboardOrganizationBoardBoardIdRouteRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
   }
 }
 
 interface DashboardRouteRouteChildren {
   DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardOrganizationOrgIdRouteRoute: typeof DashboardOrganizationOrgIdRouteRoute
   DashboardOrganizationIndexRoute: typeof DashboardOrganizationIndexRoute
+  DashboardOrganizationBoardBoardIdRouteRoute: typeof DashboardOrganizationBoardBoardIdRouteRoute
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardIndexRoute: DashboardIndexRoute,
+  DashboardOrganizationOrgIdRouteRoute: DashboardOrganizationOrgIdRouteRoute,
   DashboardOrganizationIndexRoute: DashboardOrganizationIndexRoute,
+  DashboardOrganizationBoardBoardIdRouteRoute:
+    DashboardOrganizationBoardBoardIdRouteRoute,
 }
 
 const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(

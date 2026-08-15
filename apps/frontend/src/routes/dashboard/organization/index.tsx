@@ -30,7 +30,7 @@ import {
   useQueryClient,
   useSuspenseQuery
 } from '@tanstack/react-query'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { Building2, Loader2, Plus } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -68,18 +68,22 @@ function RouteComponent() {
       {organizations.length > 0 ? (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {organizations.map((org, idx) => (
-            <Card key={idx}>
-              <CardHeader>
-                <CardTitle>{org.org.name}</CardTitle>
-                <CardDescription>
-                  {org.org.description || "No description"}
-                </CardDescription>
-              </CardHeader>
-
-              <CardContent>
-                {/* Organization details/actions */}
-              </CardContent>
-            </Card>
+            <Link
+              key={idx}
+              to="/dashboard/organization/$orgId"
+              params={{
+                orgId: org.org.id,
+              }}
+            >
+              <Card>
+                <CardHeader>
+                  <CardTitle>{org.org.name}</CardTitle>
+                  <CardDescription>
+                    {org.org.description || "No description"}
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            </Link>
           ))}
         </div>
       ) : (

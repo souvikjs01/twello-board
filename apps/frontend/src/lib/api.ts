@@ -13,6 +13,14 @@ export interface Organization {
     createdAt: string;
 }
 
+export interface Board {
+    id: string;
+    title: string;
+    description: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
 export interface UserOrganization {
     role: "MEMBER" | "ADMIN";
     org: Organization;
@@ -34,5 +42,10 @@ export async function createOrganization(input: {
     description?: string;
 }): Promise<Organization> {
     const { data } = await api.post<ApiResponse<Organization>>("/org/add", input);
+    return data.data;
+}
+
+export async function fetchOrganizationBoard(orgId: string): Promise<Board[]> {
+    const { data } = await api.get<ApiResponse<Board[]>>(`/${orgId}/boards`);
     return data.data;
 }
