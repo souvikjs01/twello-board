@@ -2,12 +2,39 @@ import type { NextFunction, Request, Response } from "express";
 import {
     addOrganizationMember,
     createOrganization,
-    getOrganizationMembers
+    getOrganizationMembers,
+    getUserOrganizations,
 } from "../services/org.service.js";
 import {
     addOrganizationMemberSchema,
     createOrganizationSchema
 } from "../schemas/zodSchemas.js";
+
+export async function getUserOrganizationsController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) {
+    try {
+        if (!req.user) {
+            res.status(401).json({
+                success: false,
+                message: "Unauthorized",
+            });
+
+            return;
+        }
+
+        const organizations = await getUserOrganizations(req.user.id);
+
+        res.status(200).json({
+            success: true,
+            data: organizations,
+        });
+    } catch (error) {
+        next(error);
+    }
+}
 
 export async function createOrganizationController(
     req: Request,

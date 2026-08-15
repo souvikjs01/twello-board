@@ -3,6 +3,7 @@ import {
     addOrganizationMemberController,
     createOrganizationController,
     getOrganizationMembersController,
+    getUserOrganizationsController,
 } from "../controllers/org.controller";
 import { requireAuth } from "../middlewares/auth.js";
 import {
@@ -14,6 +15,7 @@ import { createIssueController } from "../controllers/issue.controller";
 
 const router: Router = Router();
 
+router.get("/org/user-orgs", requireAuth, getUserOrganizationsController);
 router.post("/org/add", requireAuth, createOrganizationController);
 router.post("/:orgId/board/add", requireAuth, createBoardController);
 router.get("/:orgId/boards", requireAuth, getAllOrgBoardsController);

@@ -1,5 +1,9 @@
 import { Separator } from '#/components/ui/separator'
-import { SidebarInset, SidebarProvider, SidebarTrigger } from '#/components/ui/sidebar'
+import {
+    SidebarInset,
+    SidebarProvider,
+    SidebarTrigger
+} from '#/components/ui/sidebar'
 import { AppSidebar } from '#/components/web/dashboard/app-sidebar'
 import { authClient } from '#/lib/auth-client'
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'

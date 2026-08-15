@@ -53,7 +53,7 @@ export function LoginForm({
                     onSuccess: () => {
                         toast.success("Account Logged in successfully")
                         navigate({
-                            to: "/dashboard/organization"
+                            to: "/dashboard"
                         })
                     },
                     onError: ({ error }) => {

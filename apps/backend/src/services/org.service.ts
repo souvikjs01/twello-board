@@ -17,6 +17,10 @@ export async function createOrganization(
     return organizationRepository.createOrganization(input);
 }
 
+export async function getUserOrganizations(userId: string) {
+    return organizationRepository.findOrganizationsByUserId(userId);
+}
+
 export async function addOrganizationMember(
     requesterId: string,
     organizationId: string,

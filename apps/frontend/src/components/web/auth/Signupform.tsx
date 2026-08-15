@@ -55,7 +55,7 @@ export function SignupForm({
                     onSuccess: () => {
                         toast.success("Account signed up successfully")
                         navigate({
-                            to: "/dashboard/organization"
+                            to: "/dashboard"
                         })
                     },
                     onError: ({ error }) => {

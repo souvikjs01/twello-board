@@ -1,5 +1,14 @@
 import { prisma } from "@twello/db/client";
-
+import { MembershipRole } from "@twello/db/generated";
+export type OrganizationMembership = {
+    role: MembershipRole;
+    org: {
+        id: string;
+        name: string;
+        description: string | null;
+        createdAt: Date;
+    };
+};
 interface CreateOrganizationRepositoryInput {
     name: string;
     description?: string;
@@ -21,10 +30,30 @@ export async function createOrganization(
             data: {
                 userId: data.userId,
                 orgId: organization.id,
-                role: "MEMBER",
+                role: "ADMIN",
             },
         });
 
         return organization;
+    });
+}
+
+export async function findOrganizationsByUserId(userId: string): Promise<OrganizationMembership[]> {
+    return prisma.membership.findMany({
+        where: { userId },
+        select: {
+            role: true,
+            org: {
+                select: {
+                    id: true,
+                    name: true,
+                    description: true,
+                    createdAt: true,
+                },
+            },
+        },
+        orderBy: {
+            createdAt: "asc",
+        },
     });
 }

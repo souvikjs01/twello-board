@@ -6,7 +6,6 @@ import { createFileRoute } from '@tanstack/react-router'
 export const Route = createFileRoute('/dashboard/')({
   beforeLoad: async () => {
     const { data: userSession } = await authClient.getSession();
-    console.log("SESSION:", userSession);
 
     if (!userSession) {
       throw redirect({
